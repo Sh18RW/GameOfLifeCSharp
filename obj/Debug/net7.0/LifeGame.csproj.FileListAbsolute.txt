@@ -1,0 +1,15 @@
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.csproj.AssemblyReference.cache
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.GeneratedMSBuildEditorConfig.editorconfig
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.AssemblyInfoInputs.cache
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.AssemblyInfo.cs
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.csproj.CoreCompileInputs.cache
+/Users/cornivella/Workspace/CSharp/LifeGame/bin/Debug/net7.0/LifeGame
+/Users/cornivella/Workspace/CSharp/LifeGame/bin/Debug/net7.0/LifeGame.deps.json
+/Users/cornivella/Workspace/CSharp/LifeGame/bin/Debug/net7.0/LifeGame.runtimeconfig.json
+/Users/cornivella/Workspace/CSharp/LifeGame/bin/Debug/net7.0/LifeGame.dll
+/Users/cornivella/Workspace/CSharp/LifeGame/bin/Debug/net7.0/LifeGame.pdb
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.dll
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/refint/LifeGame.dll
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.pdb
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/LifeGame.genruntimeconfig.cache
+/Users/cornivella/Workspace/CSharp/LifeGame/obj/Debug/net7.0/ref/LifeGame.dll
