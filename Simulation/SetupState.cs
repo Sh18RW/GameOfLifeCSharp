@@ -20,9 +20,8 @@ namespace Simulation
                     case "put":
                         if (command.Length == 3)
                         {
-                            int x, y;
 
-                            if (!int.TryParse(command[1], out x) || !int.TryParse(command[2], out y))
+                            if (!int.TryParse(command[1], out int x) || !int.TryParse(command[2], out int y))
                             {
                                 Console.WriteLine("Wrong format");
                                 break;
