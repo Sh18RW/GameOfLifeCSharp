@@ -1,6 +1,4 @@
-﻿using Simulation;
-
-namespace LifeGame
+﻿namespace LifeGame
 {
     public static class Program
     {
@@ -8,7 +6,7 @@ namespace LifeGame
         {
             Console.WriteLine("Welcome to LifeGame simulation by Sh18RW!");
 
-            var simulation = new Simulation(fieldSize: 20);
+            var simulation = new Simulation.Simulation(fieldSize: 20);
 
             simulation.Play();
         }
