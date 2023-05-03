@@ -1,3 +1,5 @@
+using System.Text;
+
 namespace Simulation
 {
     public static class Graphics
@@ -24,12 +26,12 @@ namespace Simulation
                         Console.BackgroundColor = ConsoleColor.Green;
                     }
 
-                    Console.Write(c);
+                    Console.Out.Write(c);
 
                     Console.ResetColor();
                 }
 
-                Console.WriteLine();
+                Console.Out.Write('\n');
             }
         }
 
@@ -101,14 +103,15 @@ namespace Simulation
 
             if (index.Length < indexSize)
             {
-                string result = "";
+                var indexZerosCount = (int) (indexSize - Math.Ceiling((double) index.Length / 10));
+                var builder = new StringBuilder(indexZerosCount);
 
-                for (int i = 0;i < indexSize - Math.Ceiling((double) index.Length / 10);i++)
+                for (int i = 0;i < indexZerosCount;i++)
                 {
-                    result += '0';
+                    builder.Append('0');
                 }
 
-                index = result + index;
+                index = builder + index;
             }
 
             return index[x < indexSize ? x : indexSize - y - 1];
