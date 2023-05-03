@@ -26,12 +26,12 @@ namespace Simulation
                         Console.BackgroundColor = ConsoleColor.Green;
                     }
 
-                    Console.Out.Write(c);
+                    Console.Write(c);
 
                     Console.ResetColor();
                 }
 
-                Console.Out.Write('\n');
+                Console.Write('\n');
             }
         }
 
