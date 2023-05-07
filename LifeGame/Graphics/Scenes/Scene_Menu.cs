@@ -50,6 +50,7 @@ namespace LifeGame.Graphics.Scenes
                             _context.ChangeScene(new Scene_NewGround(_context));
                             break;
                         case 1:
+                            _context.ChangeScene(new Scene_LoadGround(_context));
                             break;
                         case 2:
                             Environment.Exit(0);
