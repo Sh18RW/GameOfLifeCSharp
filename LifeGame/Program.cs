@@ -1,4 +1,5 @@
-﻿using LifeGame.Graphics.Scenes;
+﻿using LifeGame.Graphics;
+using LifeGame.Graphics.Scenes;
 
 namespace LifeGame
 {
@@ -6,11 +7,29 @@ namespace LifeGame
     {
         public static void Main()
         {
-            var scene = new Scene_Menu();
+            new LifeGame().Start();
+        }
 
-            while (true)
+        public class LifeGame : IContext
+        {
+            private Scene _currentScene;
+
+            public LifeGame()
             {
-                scene.Update();
+                _currentScene = new Scene_Menu(this);
+            }
+
+            public void Start()
+            {
+                while (true)
+                {
+                    _currentScene.Update();
+                }
+            }
+
+            public void ChangeScene(Scene scene)
+            {
+                _currentScene = scene;
             }
         }
     }

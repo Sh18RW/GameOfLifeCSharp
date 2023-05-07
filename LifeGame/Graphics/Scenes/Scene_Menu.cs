@@ -2,12 +2,12 @@ using System.Text;
 
 namespace LifeGame.Graphics.Scenes
 {
-    public class Scene_Menu : LifeGame.Graphics.Scene
+    public class Scene_Menu : Scene
     {
         private static readonly string[] menuItems = new string[]{ "New Ground", "Load Ground", "Shut Down" };
         private int _currentMenu;
 
-        public Scene_Menu()
+        public Scene_Menu(IContext context) : base(context)
         {
             _currentMenu = 0;
         }
@@ -40,6 +40,20 @@ namespace LifeGame.Graphics.Scenes
                     if (++_currentMenu >= menuItems.Length)
                     {
                         _currentMenu -= menuItems.Length;
+                    }
+                    break;
+
+                case ConsoleKey.Enter:
+                    switch (_currentMenu)
+                    {
+                        case 0:
+                            _context.ChangeScene(new Scene_NewGround(_context));
+                            break;
+                        case 1:
+                            break;
+                        case 2:
+                            Environment.Exit(0);
+                            break;
                     }
                     break;
             }
