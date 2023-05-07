@@ -1,14 +1,17 @@
-﻿namespace LifeGame
+﻿using LifeGame.Graphics.Scenes;
+
+namespace LifeGame
 {
     public static class Program
     {
         public static void Main()
         {
-            Console.WriteLine("Welcome to LifeGame simulation by Sh18RW!");
+            var scene = new Scene_Menu();
 
-            var simulation = new Simulation.Simulation(fieldSize: 20);
-
-            simulation.Play();
+            while (true)
+            {
+                scene.Update();
+            }
         }
     }
 }

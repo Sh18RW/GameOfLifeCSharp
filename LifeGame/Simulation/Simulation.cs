@@ -22,14 +22,14 @@ namespace Simulation
                 {
                     _gameState_isStarted = SetupState.Update(ref _field);
                     Console.Clear();
-                    Graphics.DrawField(_field);
+                    // Graphics.DrawField(_field);
                 }
                 else
                 {
                     Update();
 
                     Console.Clear();
-                    Graphics.DrawField(_field);
+                    // Graphics.DrawField(_field);
                     Console.WriteLine(step++);
 
                     Thread.Sleep(2000);
