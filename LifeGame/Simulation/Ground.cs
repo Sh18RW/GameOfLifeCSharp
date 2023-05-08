@@ -1,27 +1,37 @@
-namespace LifeGame.Simulation
+using System.Xml.Serialization;
+
+namespace LifeGame.Simulation.Ground
 {
-    public class Ground
+    [Serializable]
+    public abstract class Ground
     {
         // world with extended world size (not fixed)
         public static Ground LoadGround()
         {
-            return null;
+            return new ExtendedGround();
         }
         // world with const size
         public static Ground LoadGround(int worldSize)
         {
-            return null;
+            return new FixedGround(worldSize);
         }
         // loading from serialization
-        public static Ground LoadGround(string loadFrom)
+        public static Ground? LoadGround(string loadFrom)
         {
+            var serializer = new XmlSerializer(typeof(Ground));
+            try
+            {
+                var fs = new FileStream(loadFrom, FileMode.Open);
+                return serializer.Deserialize(fs) as Ground;
+            }
+            catch (FileNotFoundException)
+            {
+                Console.WriteLine("Can't find file");
+            }
+
             return null;
         }
 
-        private enum GroundSizeType
-        {
-            Const,
-            Extended
-        }
+        public abstract void Update();
     }
 }

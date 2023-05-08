@@ -1,4 +1,5 @@
 using System.Text;
+using LifeGame.Simulation.Ground;
 
 namespace LifeGame.Graphics.Scenes
 {
@@ -151,7 +152,18 @@ namespace LifeGame.Graphics.Scenes
                                 _selectedWorldType = 1;
                                 break;
                             case 2:
-                                Environment.Exit(-1);
+                                Ground ground;
+
+                                if (_selectedWorldType == 0)
+                                {
+                                    ground = Ground.LoadGround(_worldSize);
+                                }
+                                else
+                                {
+                                    ground = Ground.LoadGround();
+                                }
+
+                                _context.ChangeScene(new Scene_Simulation(_context, ground));
                                 break;
                         }
                     }

@@ -1,5 +1,5 @@
 using System.Text;
-using LifeGame.Simulation;
+using LifeGame.Simulation.Ground;
 
 namespace LifeGame.Graphics.Scenes
 {
@@ -71,7 +71,7 @@ namespace LifeGame.Graphics.Scenes
                             break;
                         }
 
-                        Environment.Exit(-1);
+                        _context.ChangeScene(new Scene_Simulation(_context, ground));
                     }
                     else
                     {
