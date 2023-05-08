@@ -1,4 +1,4 @@
-namespace Simulation
+namespace LifeGame.Simulation.Logic
 {
     public enum ECell
     {

@@ -5,6 +5,12 @@ namespace LifeGame.Simulation.Ground
     [Serializable]
     public abstract class Ground
     {
+        private protected readonly Dictionary<int, Logic.Tile> _tilemap;
+        private protected Ground()
+        {
+            _tilemap = new Dictionary<int, Logic.Tile>();
+        }
+
         // world with extended world size (not fixed)
         public static Ground LoadGround()
         {
@@ -33,5 +39,7 @@ namespace LifeGame.Simulation.Ground
         }
 
         public abstract void Update();
+        public abstract void SetCell(int x, int y);
+        public abstract Logic.ECell? GetCell(int x, int y);
     }
 }
