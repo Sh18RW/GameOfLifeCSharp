@@ -31,7 +31,7 @@ namespace LifeGame.Graphics.Scenes
 
         private protected override string Draw()
         {
-            StringBuilder result = new StringBuilder();
+            var result = new StringBuilder();
 
             for (int y = 0; y < _screenHeight - 1; y++)
             {
@@ -123,8 +123,8 @@ namespace LifeGame.Graphics.Scenes
                     _xOffset += 2;
                     break;
                 case ConsoleKey.Enter:
-                    int x = (_xCenter + _xOffset) / 2;
-                    int y = (_yCenter + _yOffset) / 2;
+                    int x = (_xCenter + _xOffset - 1) / 2;
+                    int y = (_yCenter + _yOffset - 1) / 2;
 
                     _ground.SetCell(x, y);
                     break;
