@@ -11,8 +11,8 @@ namespace LifeGame.Simulation.Ground
 
         public override ECell? GetCell(int x, int y)
         {
-            int tileX = x / tileSize - (x < 0 ? 1 : 0);
-            int tileY = y / tileSize - (y < 0 ? 1 : 0);
+            int tileX = (x + (x < 0 ? 1 : 0)) / tileSize - (x < 0 ? 1 : 0);
+            int tileY = (y + (y < 0 ? 1 : 0)) / tileSize - (y < 0 ? 1 : 0);
 
             if (!_tilemap.ContainsKey((tileX, tileY)))
             {

@@ -71,7 +71,7 @@ namespace LifeGame.Graphics.Scenes
                             break;
                         }
 
-                        _context.ChangeScene(new Scene_Simulation(_context, ground));
+                        _context.ChangeScene(new SceneSimulation(_context, ground));
                     }
                     else
                     {

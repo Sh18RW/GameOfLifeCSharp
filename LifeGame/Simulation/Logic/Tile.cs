@@ -46,7 +46,10 @@ namespace LifeGame.Simulation.Logic
 
         public ECell? GetCell(int x, int y)
         {
-            if (x >= _size || x < 0 || y >= _size || y < 0) return null;
+            if (x >= _size || x < 0 || y >= _size || y < 0) {
+                Console.WriteLine($"Null at {x} {y}");
+                return null;
+            }
             return _tile[y][x];
         }
 
