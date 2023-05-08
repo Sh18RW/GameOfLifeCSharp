@@ -8,25 +8,23 @@ namespace LifeGame.Graphics.Scenes
     {
         private readonly Ground _ground;
 
-        private readonly int _screenWidth, _screenHeight;
+        private int _screenWidth, _screenHeight;
+        private int _xCenter, _yCenter;
         private int _xOffset, _yOffset;
-        private readonly int _xCenter, _yCenter;
+
+        private bool _isPlaying;
+        private int _delay;
+
+        private Thread? _updatingThread;
 
         public SceneSimulation(IContext context, Ground ground) : base(context)
         {
             _ground = ground;
 
-            _screenWidth = Console.WindowWidth;
-            _screenHeight = Console.WindowHeight - 1;
+            UpdateVideoParametrs();
 
-            _xCenter = (_screenWidth / 2) + (_screenWidth % 2);
-            _yCenter = (_screenHeight / 2) + (_screenHeight % 2);
-
-            // _xOffset = -(_screenWidth / 2);
-            // _yOffset = -(_screenHeight / 2);
-
-            _xOffset = -(_screenWidth / 2) + 1 - (_screenWidth % 2);
-            _yOffset = -(_screenHeight / 2) + 1 - (_screenHeight % 2);
+            _isPlaying = false;
+            _delay = 1000;
         }
 
         private protected override string Draw()
@@ -94,20 +92,81 @@ namespace LifeGame.Graphics.Scenes
                 _ = result.Append('\n');
             }
 
-            _ = result.Append($"Press 's' to stop simulation and enter the command {_xOffset / 2} {_yOffset / 2}");
+            _ = result.Append($"Press 'm' to stop simulation and enter the command\t\t|{_isPlaying}|{_delay}ms|");
 
             return result.ToString();
         }
 
         private protected override void UpdateControl()
         {
+            if (_isPlaying && !Console.KeyAvailable)
+            {
+                Thread.Sleep(100);
+                return;
+            }
+
             ConsoleKeyInfo key = Console.ReadKey();
 
             switch (key.Key)
             {
+                case ConsoleKey.M:
+                    _isPlaying = false;
+
+                    Console.WriteLine("Write 'help' to get a list of commands");
+
+                    while(true)
+                    {
+                        string[] command = (Console.ReadLine() ?? "").Split(' ');
+
+                        if (command.Length > 0)
+                        {
+                            switch (command[0])
+                            {
+                                case "help":
+                                    break;
+                                case "update_screen":
+                                    UpdateVideoParametrs();
+                                    break;
+                                case "continue_editing":
+                                    return;
+                                case "set_delay":
+                                    if (command.Length < 2)
+                                    {
+                                        Console.WriteLine("Can't find first argument");
+                                    }
+                                    if (!int.TryParse(command[1], out _delay))
+                                    {
+                                        if (_delay <= 0)
+                                        {
+                                            _delay = 100;
+                                            Console.WriteLine("Wrong value for delay, seting up to 100");
+                                        }
+                                        else if (_delay > 4000)
+                                        {
+                                            _delay = 4000;
+                                            Console.WriteLine("Wrong value for delay, setting down to 4000");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine("Something wrong in integer parsing");
+                                    }
+                                    Console.WriteLine($"Now delay is {_delay}ms");
+                                    break;
+                                case "play":
+                                    _isPlaying = true;
+                                    new Thread(() => {
+                                        while (_isPlaying)
+                                        {
+                                            _ground.Update();
+                                            Thread.Sleep(_delay);
+                                        }
+                                    }).Start();
+                                    return;
+                            }
+                        }
+                    }
                 case ConsoleKey.S:
-                    Console.WriteLine("You paused simulation");
-                    _ = Console.ReadKey();
                     _ground.Update();
                     break;
                 case ConsoleKey.UpArrow:
@@ -129,7 +188,21 @@ namespace LifeGame.Graphics.Scenes
                     _ground.SetCell(x, y);
                     break;
             }
+        }
 
+        private void UpdateVideoParametrs()
+        {
+            _screenWidth = Console.WindowWidth;
+            _screenHeight = Console.WindowHeight - 1;
+
+            _xCenter = (_screenWidth / 2) + (_screenWidth % 2);
+            _yCenter = (_screenHeight / 2) + (_screenHeight % 2);
+
+            // _xOffset = -(_screenWidth / 2);
+            // _yOffset = -(_screenHeight / 2);
+
+            _xOffset = -(_screenWidth / 2) + 1 - (_screenWidth % 2);
+            _yOffset = -(_screenHeight / 2) + 1 - (_screenHeight % 2);
         }
     }
 }
