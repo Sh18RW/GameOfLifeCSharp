@@ -1,14 +1,15 @@
 using System.Xml.Serialization;
+using LifeGame.Simulation.Logic;
 
 namespace LifeGame.Simulation.Ground
 {
     [Serializable]
     public abstract class Ground
     {
-        private protected readonly Dictionary<int, Logic.Tile> _tilemap;
+        private protected readonly Dictionary<Point, Logic.Tile> _tilemap;
         private protected Ground()
         {
-            _tilemap = new Dictionary<int, Logic.Tile>();
+            _tilemap = new Dictionary<Point, Logic.Tile>();
         }
 
         // world with extended world size (not fixed)

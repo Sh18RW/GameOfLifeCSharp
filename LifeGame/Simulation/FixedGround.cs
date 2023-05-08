@@ -10,7 +10,7 @@ namespace LifeGame.Simulation.Ground
         {
             _groundSize = groundSize;
 
-            _tilemap.Add(0, new Logic.Tile(_groundSize));
+            _tilemap.Add(0, new Tile(_groundSize));
         }
 
         public int GetGroundSize()

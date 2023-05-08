@@ -4,39 +4,55 @@ namespace LifeGame.Simulation.Logic
     {
         private readonly int _size;
 
-        private ECell[][] tile;
+        private readonly ECell[][] _tile;
+        private int _countOfAliveCells;
 
         public Tile(int size)
         {
             _size = size;
+            _countOfAliveCells = 0;
 
-            tile = new ECell[_size][];
+            _tile = new ECell[_size][];
 
             for (int i = 0;i < _size;i++)
             {
-                tile[i] = new ECell[_size];
+                _tile[i] = new ECell[_size];
 
                 for (int j = 0;j < _size;j++)
                 {
-                    tile[i][j] = ECell.Empty;
+                    _tile[i][j] = ECell.Empty;
                 }
             }
         }
 
         public void SetCell(int x, int y)
         {
-            SetCell(x, y, tile[y][x] == ECell.Empty ? ECell.Alive : ECell.Empty);
+            SetCell(x, y, _tile[y][x] == ECell.Empty ? ECell.Alive : ECell.Empty);
         }
 
         public void SetCell(int x, int y, ECell state)
         {
-            tile[y][x] = state;
+            if (_tile[y][x] != ECell.Alive && state == ECell.Alive)
+            {
+                _countOfAliveCells++;
+            }
+            else if (_tile[y][x] != ECell.Empty && state == ECell.Empty)
+            {
+                _countOfAliveCells--;
+            }
+
+            _tile[y][x] = state;
         }
 
         public ECell? GetCell(int x, int y)
         {
             if (x >= _size || x < 0 || y >= _size || y < 0) return null;
-            return tile[y][x];
+            return _tile[y][x];
+        }
+
+        public int GetCountOfAliveCells()
+        {
+            return _countOfAliveCells;
         }
     }
 }
