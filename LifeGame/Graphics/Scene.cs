@@ -11,8 +11,9 @@ namespace LifeGame.Graphics
 
         public void Update()
         {
+            var text = Draw();
             Console.Clear();
-            Console.WriteLine(Draw());
+            Console.WriteLine(text);
             UpdateControl();
         }
         private protected abstract string Draw();

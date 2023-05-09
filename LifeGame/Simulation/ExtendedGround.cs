@@ -1,7 +1,9 @@
+using System.Xml;
 using LifeGame.Simulation.Logic;
 
 namespace LifeGame.Simulation.Ground
 {
+    [Serializable]
     public class ExtendedGround : Ground
     {
         private static readonly int tileSize = 10;
@@ -24,20 +26,18 @@ namespace LifeGame.Simulation.Ground
 
         public override void SetCell(int x, int y)
         {
-            int tileX = x / tileSize - (x < 0 ? 1 : 0);
-            int tileY = y / tileSize - (y < 0 ? 1 : 0);
+            int tileX = (x + (x < 0 ? 1 : 0)) / tileSize - (x < 0 ? 1 : 0);
+            int tileY = (y + (y < 0 ? 1 : 0)) / tileSize - (y < 0 ? 1 : 0);
             
             if (!_tilemap.ContainsKey((tileX, tileY)))
             {
                 _tilemap.Add((tileX, tileY), new Tile(tileSize));
             }
 
-            _tilemap[(tileX, tileY)].SetCell(x - tileX * tileSize, y - tileY * tileSize);
-        }
+            var cellX = x - tileSize * tileX;
+            var cellY = y - tileSize * tileY;
 
-        public static int GetTileSize()
-        {
-            return tileSize;
+            _tilemap[(tileX, tileY)].SetCell(cellX, cellY);
         }
 
         public override void Update()
@@ -157,6 +157,20 @@ namespace LifeGame.Simulation.Ground
                     _tilemap.Remove(key);
                 }
             }
+        }
+
+        private protected override void MakeSaveFile(XmlDocument document)
+        {
+            base.MakeSaveFile(document);
+            var infoElement = document.CreateElement("groundType");
+            infoElement.AppendChild(document.CreateTextNode("extended"));
+
+            document.FirstChild?.AppendChild(infoElement);
+        }
+
+        public override int GetTileSize()
+        {
+            return tileSize;
         }
     }
 }

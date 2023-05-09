@@ -1,6 +1,7 @@
 using LifeGame.Simulation.Ground;
 using LifeGame.Simulation.Logic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace LifeGame.Graphics.Scenes
 {
@@ -163,6 +164,23 @@ namespace LifeGame.Graphics.Scenes
                                         }
                                     }).Start();
                                     return;
+                                case "save":
+                                    while (true)
+                                    {
+                                        Console.WriteLine("Write full path for saving the ground or write 'done' to exit this command");
+
+                                        var input = Console.ReadLine();
+
+                                        if (input == null || input.Equals("done"))
+                                        {
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            _ground.SaveGround(input);
+                                        }
+                                    }
+                                    break;
                             }
                         }
                     }

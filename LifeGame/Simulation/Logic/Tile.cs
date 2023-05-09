@@ -1,5 +1,8 @@
+using System.Xml;
+
 namespace LifeGame.Simulation.Logic
 {
+    [Serializable]
     public class Tile
     {
         private readonly int _size;
@@ -47,7 +50,6 @@ namespace LifeGame.Simulation.Logic
         public ECell? GetCell(int x, int y)
         {
             if (x >= _size || x < 0 || y >= _size || y < 0) {
-                Console.WriteLine($"Null at {x} {y}");
                 return null;
             }
             return _tile[y][x];
@@ -56,6 +58,47 @@ namespace LifeGame.Simulation.Logic
         public int GetCountOfAliveCells()
         {
             return _countOfAliveCells;
+        }
+
+        public XmlNode MakeXmlNode(XmlDocument root)
+        {
+            var tileValuesRoot = root.CreateElement("value");
+
+            foreach (var line in _tile)
+            {
+                var xmlLine = root.CreateElement("line");
+
+                foreach (var i in line)
+                {
+                    var elementXml = root.CreateElement("cell");
+
+                    elementXml.AppendChild(root.CreateTextNode(i.ToString()));
+
+                    xmlLine.AppendChild(elementXml);
+                }
+
+                tileValuesRoot.AppendChild(xmlLine);
+            }
+
+            return tileValuesRoot;
+        }
+
+        public static Tile MakeTileFromXml(XmlElement element, int tileSize)
+        {
+            var tile = new Tile(tileSize);
+
+            for (var y = 0;y < tileSize;y++)
+            {
+                var line = element.ChildNodes[y];
+                for (var x = 0;x < tileSize;x++)
+                {
+                    var cellNode = (line as XmlElement).ChildNodes[x];
+                    ECell cell = (ECell) int.Parse(((XmlText) cellNode).ToString());
+                    tile.SetCell(x, y, cell);
+                }
+            }
+
+            return tile;
         }
     }
 }
