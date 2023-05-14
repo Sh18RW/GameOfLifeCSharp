@@ -95,7 +95,7 @@ namespace LifeGame.Simulation.Logic
 
             for (int y = 0;y < tileSize;y++)
             {
-                var line = ((XmlText) lines[y].FirstChild).Value;
+                var line = GetCellsLine(lines, y);
 
                 for (int x = 0;x < tileSize;x++)
                 {
@@ -106,6 +106,22 @@ namespace LifeGame.Simulation.Logic
             }
 
             return tile;
+        }
+
+        private static string GetCellsLine(XmlNodeList list, int i)
+        {
+            try
+            {
+                if (list.Count < i) throw new Exception();
+
+                var cellsLine = (list[i] ?? throw new Exception()).FirstChild as XmlText ?? throw new Exception();
+
+                return cellsLine.Value ?? throw new Exception();
+            }
+            catch (Exception)
+            {
+                throw new Exception("Failed on tile parsing");
+            }
         }
     }
 }

@@ -35,13 +35,7 @@ namespace LifeGame.Simulation.Logic
 
         public static Point MakePointFromXml(XmlElement element)
         {
-            var xPosElement = element.GetElementsByTagName("x")[0];
-            var yPosElement = element.GetElementsByTagName("y")[0];
-
-            var xPosText = (XmlText) xPosElement.FirstChild;
-            var yPosText = (XmlText) yPosElement.FirstChild;
-
-            return new Point(int.Parse(xPosText.Value), y: int.Parse(yPosText.Value));
+            return new Point(ParsePos(element, "x"), ParsePos(element, "y"));
         }
 
         public static implicit operator Point(int x)
@@ -62,6 +56,27 @@ namespace LifeGame.Simulation.Logic
         public override int GetHashCode()
         {
             return X + Y;
+        }
+
+        private static int ParsePos(XmlElement element, string positionName)
+        {
+            try
+            {
+                var poses = element.GetElementsByTagName(positionName);
+
+                if (poses.Count == 0)
+                    throw new Exception();
+
+                var positionElement = (poses[0] ?? throw new Exception()).FirstChild ?? throw new Exception();
+                var positionText = positionElement as XmlText ?? throw new Exception();
+                if (!int.TryParse(positionText.Value, out var position)) throw new Exception();
+
+                return position;
+            }
+            catch(Exception)
+            {
+                throw new Exception("Failed on position parsing");
+            }
         }
     }
 }

@@ -94,11 +94,8 @@ namespace LifeGame.Simulation.Ground
 
         private protected static Ground GetGroundFromXml(XmlDocument document)
         {
-            var groundTypeElement = document.GetElementsByTagName("groundType")[0];
-            var tileSizeElement = document.GetElementsByTagName("tileSize")[0];
-
-            var groundType = ((XmlText) groundTypeElement.FirstChild).Value;
-            var tileSize = int.Parse(((XmlText) tileSizeElement.FirstChild).Value);
+            var groundType = GetStringValue(document, "groundType");
+            if(!int.TryParse(GetStringValue(document, "tileSize"), out var tileSize)) throw new Exception("Can't parse tile size");
 
             var tilesElement = document.GetElementsByTagName("tile");
 
@@ -106,19 +103,36 @@ namespace LifeGame.Simulation.Ground
 
             foreach (XmlElement tileElement in tilesElement)
             {
-                var pointElement = tileElement.GetElementsByTagName("point")[0];
-                var tileInfoElement = tileElement.GetElementsByTagName("tileCells")[0];
+                var pointElement = tileElement.GetElementsByTagName("point")[0] ?? throw new Exception("Can't read point");
+                var tileInfoElement = tileElement.GetElementsByTagName("tileCells")[0] ?? throw new Exception("Can't read tile");
 
-                var point = Point.MakePointFromXml((XmlElement) pointElement);
-                var tile = Tile.MakeTileFromXml((XmlElement) tileInfoElement, tileSize);
+                var point = Point.MakePointFromXml(pointElement as XmlElement ?? throw new Exception("Can't parse point"));
+                var tile = Tile.MakeTileFromXml(tileInfoElement as XmlElement ?? throw new Exception("Can't parse tile"), tileSize);
 
-                if (ground._tilemap.ContainsKey(point))
-                    ground._tilemap.Remove(point);
+                ground._tilemap.Remove(point);
 
                 ground._tilemap[point] = tile;
             }
 
             return ground;
+        }
+
+        private static string GetStringValue(XmlDocument root, string tag)
+        {
+            try
+            {
+                var list = root.GetElementsByTagName(tag);
+
+                if (list.Count == 0) throw new Exception();
+
+                var result = (list[0] ?? throw new Exception()).FirstChild ?? throw new Exception();
+
+                return result.Value ?? throw new Exception();
+            }
+            catch(Exception)
+            {
+                throw new Exception("Failed on ground info parsing");
+            }
         }
     }
 
