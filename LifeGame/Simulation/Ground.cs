@@ -112,7 +112,7 @@ namespace LifeGame.Simulation.Ground
 
             var tilesElement = document.GetElementsByTagName("tile");
 
-            Ground ground = groundType.Equals("fixes") ? new FixedGround(tileSize) : new ExtendedGround();
+            Ground ground = groundType.Equals("fixed") ? new FixedGround(tileSize) : new ExtendedGround();
 
             foreach (XmlElement tileElement in tilesElement)
             {

@@ -176,7 +176,7 @@ namespace LifeGame.Graphics.Scenes
 
                                         while (true)
                                         {
-                                            switch (Console.ReadKey().Key)
+                                            switch (Console.ReadKey(true).Key)
                                             {
                                                 case ConsoleKey.Y:
                                                     SaveCurrentGround();
