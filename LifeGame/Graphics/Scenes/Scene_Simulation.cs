@@ -15,6 +15,8 @@ namespace LifeGame.Graphics.Scenes
         private bool _isPlaying;
         private int _delay;
 
+        private bool _isJustSaved;
+
         private Thread? _currentUpdatingThread;
 
         public SceneSimulation(IContext context, Ground ground) : base(context)
@@ -92,7 +94,7 @@ namespace LifeGame.Graphics.Scenes
                 _ = result.Append('\n');
             }
 
-            _ = result.Append($"Press 'm' to stop simulation and enter the command\t\t|{_isPlaying}|{_delay}ms|");
+            _ = result.Append($"Press 'c' to stop simulation and enter the command\t|{_isPlaying}|{_delay}ms| |{(_xCenter + _xOffset) / 2}||{(_yCenter + _yOffset) / 2}|");
 
             return result.ToString();
         }
@@ -104,12 +106,11 @@ namespace LifeGame.Graphics.Scenes
                 Thread.Sleep(100);
                 return;
             }
-
-            ConsoleKeyInfo key = Console.ReadKey();
+            ConsoleKeyInfo key = Console.ReadKey(true);
 
             switch (key.Key)
             {
-                case ConsoleKey.M:
+                case ConsoleKey.C:
                     _isPlaying = false;
 
                     Console.WriteLine("Write 'help' to get a list of commands");
@@ -159,6 +160,7 @@ namespace LifeGame.Graphics.Scenes
                                     _currentUpdatingThread = new Thread(() => {
                                         while (_isPlaying)
                                         {
+                                            _isJustSaved = false;
                                             _ground.Update();
                                             Thread.Sleep(_delay);
                                         }
@@ -167,26 +169,41 @@ namespace LifeGame.Graphics.Scenes
 
                                     return;
                                 case "save":
-                                    while (true)
+                                    SaveCurrentGround();
+                                    break;
+                                case "quit":
+                                    if (!_isJustSaved)
                                     {
-                                        Console.WriteLine("Write full path for saving the ground or write 'done' to exit this command");
+                                        Console.WriteLine("You didn't save the current simulation state. Do you want to save? [Y/n]");
 
-                                        var input = Console.ReadLine();
-
-                                        if (input == null || input.Equals("done"))
+                                        while (true)
                                         {
-                                            break;
-                                        }
-                                        else
-                                        {
-                                            _ground.SaveGround(input);
+                                            switch (Console.ReadKey().Key)
+                                            {
+                                                case ConsoleKey.Y:
+                                                    SaveCurrentGround();
+                                                    goto continue_quiting;
+                                                case ConsoleKey.N:
+                                                    goto continue_quiting;
+                                                case ConsoleKey.Enter:
+                                                    SaveCurrentGround();
+                                                    goto continue_quiting;
+                                            }
                                         }
                                     }
+                                    continue_quiting:
+
+                                    _context.ChangeScene(new Scene_Menu(_context));
+
+                                    return;
+                                default:
+                                    Console.WriteLine($"Unknown command: {command[0]}");
                                     break;
                             }
                         }
                     }
                 case ConsoleKey.S:
+                    _isJustSaved = false;
                     _ground.Update();
                     break;
                 case ConsoleKey.P:
@@ -226,6 +243,35 @@ namespace LifeGame.Graphics.Scenes
 
             _xOffset = -(_screenWidth / 2) + 1 - (_screenWidth % 2);
             _yOffset = -(_screenHeight / 2) + 1 - (_screenHeight % 2);
+        }
+
+        private void SaveCurrentGround()
+        {
+            while (true)
+            {
+                Console.WriteLine("Write path to save the ground or write 'done' to exit");
+                var input = Console.ReadLine() ?? "";
+
+                if (input.Equals("done"))
+                {
+                    break;
+                }
+                else if (!(input.Length == 0))
+                {
+                    _isJustSaved = _ground.SaveGround(input);
+
+                    if (_isJustSaved)
+                    {
+                        Console.WriteLine("Ground was successful written.");
+                        Console.ReadKey();
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("There is problem");
+                    }
+                }
+            }
         }
     }
 }

@@ -51,7 +51,7 @@ namespace LifeGame.Graphics.Scenes
             }
             else
             {
-                result.Append("const");
+                result.Append("\textended");
             }
 
             result.Append('\n');

@@ -38,7 +38,7 @@ namespace LifeGame.Simulation.Ground
             return null;
         }
 
-        public void SaveGround(string saveFrom)
+        public bool SaveGround(string saveFrom)
         {
             // TODO: make saving for ground
 
@@ -51,12 +51,16 @@ namespace LifeGame.Simulation.Ground
                 MakeSaveFile(document);
 
                 document.Save(saveFrom);
+
+                return true;
             }
             catch(Exception e)
             {
 
                 Console.WriteLine($"Some problems while saving: {e.Message}");
                 Console.ReadKey();
+
+                return false;
             }
         }
 
