@@ -124,6 +124,14 @@ namespace LifeGame.Graphics.Scenes
                             switch (command[0])
                             {
                                 case "help":
+                                    Console.WriteLine("update_screen - update screen paramets");
+                                    Console.WriteLine("continue_editing - exit console to continue editing");
+                                    Console.WriteLine("set_delay - set delay between simulation updating (don't set it lower then 100 and higher than 4000)");
+                                    Console.WriteLine("play - start the simulation");
+                                    Console.WriteLine("save - open save screen");
+                                    Console.WriteLine("quit - exit simulation screen");
+                                    Console.WriteLine("Press 'C' to open console;Press 'N' to do step in simulation;Press 'P' to start playing simulation;Press 'S' to stop playing simulation");
+                                    Console.WriteLine("For moving use arrows on keyboard");
                                     break;
                                 case "update_screen":
                                     UpdateVideoParametrs();
@@ -155,17 +163,7 @@ namespace LifeGame.Graphics.Scenes
                                     Console.WriteLine($"Now delay is {_delay}ms");
                                     break;
                                 case "play":
-                                    _currentUpdatingThread?.Join();
-                                    _isPlaying = true;
-                                    _currentUpdatingThread = new Thread(() => {
-                                        while (_isPlaying)
-                                        {
-                                            _isJustSaved = false;
-                                            _ground.Update();
-                                            Thread.Sleep(_delay);
-                                        }
-                                    });
-                                    _currentUpdatingThread.Start();
+                                    PlaySimulation();
 
                                     return;
                                 case "save":
@@ -182,11 +180,13 @@ namespace LifeGame.Graphics.Scenes
                                             {
                                                 case ConsoleKey.Y:
                                                     SaveCurrentGround();
+                                                    Console.ReadKey();
                                                     goto continue_quiting;
                                                 case ConsoleKey.N:
                                                     goto continue_quiting;
                                                 case ConsoleKey.Enter:
                                                     SaveCurrentGround();
+                                                    Console.ReadKey();
                                                     goto continue_quiting;
                                             }
                                         }
@@ -202,11 +202,14 @@ namespace LifeGame.Graphics.Scenes
                             }
                         }
                     }
-                case ConsoleKey.S:
+                case ConsoleKey.N:
                     _isJustSaved = false;
                     _ground.Update();
                     break;
                 case ConsoleKey.P:
+                    PlaySimulation();
+                    break;
+                case ConsoleKey.S:
                     _isPlaying = false;
                     break;
                 case ConsoleKey.UpArrow:
@@ -222,6 +225,7 @@ namespace LifeGame.Graphics.Scenes
                     _xOffset += 2;
                     break;
                 case ConsoleKey.Enter:
+                    _isJustSaved = false;
                     int x = (_xCenter + _xOffset - 1) / 2;
                     int y = (_yCenter + _yOffset - 1) / 2;
 
@@ -263,7 +267,6 @@ namespace LifeGame.Graphics.Scenes
                     if (_isJustSaved)
                     {
                         Console.WriteLine("Ground was successful written.");
-                        Console.ReadKey();
                         break;
                     }
                     else
@@ -272,6 +275,23 @@ namespace LifeGame.Graphics.Scenes
                     }
                 }
             }
+        }
+
+        private void PlaySimulation()
+        {
+            if (_isPlaying) return;
+            _currentUpdatingThread?.Join();
+            _isPlaying = true;
+            _isJustSaved = false;
+            _currentUpdatingThread = new Thread(() => {
+                while (_isPlaying)
+                {
+                    _isJustSaved = false;
+                    _ground.Update();
+                    Thread.Sleep(_delay);
+                }
+            });
+            _currentUpdatingThread.Start();
         }
     }
 }
