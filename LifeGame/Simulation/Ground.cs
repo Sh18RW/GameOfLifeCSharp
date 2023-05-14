@@ -24,8 +24,9 @@ namespace LifeGame.Simulation.Ground
         // loading from serialization
         public static Ground? LoadGround(string loadFrom)
         {
-            // TODO: make loading for ground 
-            return null;
+            var document = new XmlDocument();
+            document.Load(loadFrom);
+            return GetGroundFromXml(document);
         }
 
         public void SaveGround(string saveFrom)
@@ -35,10 +36,14 @@ namespace LifeGame.Simulation.Ground
             try
             {
                 var document = new XmlDocument();
+
+                document.AppendChild(document.CreateXmlDeclaration("1.0", "UTF-8", null));
+
                 MakeSaveFile(document);
 
                 document.Save(saveFrom);
-            } catch(Exception e)
+            }
+            catch(Exception e)
             {
 
                 Console.WriteLine($"Some problems while saving: {e.Message}");
@@ -50,66 +55,70 @@ namespace LifeGame.Simulation.Ground
         public abstract void SetCell(int x, int y);
         public abstract ECell? GetCell(int x, int y);
         public abstract int GetTileSize();
+        private protected abstract string GetGroundType();
 
-        private protected virtual void MakeSaveFile(XmlDocument document)
+        private protected void MakeSaveFile(XmlDocument document)
         {
             var root = document.CreateElement("ground");
-            document.AppendChild(newChild: root);
-            var tilesRoot = document.CreateElement("tiles");
 
-            var tileSizeInfo = document.CreateElement("tileSize");
+            var groundTypeInfo = document.CreateElement("groundType");
+            var groundTileInfo = document.CreateElement("tileSize");
 
-            tileSizeInfo.AppendChild(document.CreateTextNode(GetTileSize().ToString()));
+            groundTypeInfo.AppendChild(document.CreateTextNode(GetGroundType()));
+            groundTileInfo.AppendChild(document.CreateTextNode(GetTileSize().ToString()));
+
+            root.AppendChild(groundTypeInfo);
+            root.AppendChild(groundTileInfo);
+
+            var tilesElement = document.CreateElement("tiles");
 
             foreach (var key in _tilemap.Keys)
             {
-                var element = _tilemap[key];
+                var tile = _tilemap[key];
 
-                var xmlTileInfo = document.CreateElement("tileInfo");
+                var tileElement = document.CreateElement("tile");
 
-                xmlTileInfo.AppendChild(key.MakeXmlNode(document));
-                xmlTileInfo.AppendChild(element.MakeXmlNode(document));
+                var pointElement = key.MakeXmlNode(document);
+                var tileInfoElement = tile.MakeXmlNode(document);
 
-                tilesRoot.AppendChild(xmlTileInfo);
+                tileElement.AppendChild(pointElement);
+                tileElement.AppendChild(tileInfoElement);
+
+                tilesElement.AppendChild(tileElement);
             }
 
-            root.AppendChild(tileSizeInfo);
-            root.AppendChild(tilesRoot);
+            root.AppendChild(tilesElement);
+
+            document.AppendChild(root);
         }
 
-        private protected virtual Ground GetGroundFromXml(XmlDocument document)
+        private protected static Ground GetGroundFromXml(XmlDocument document)
         {
-            var root = document.FirstChild as XmlElement;
-            string type;
+            var groundTypeElement = document.GetElementsByTagName("groundType")[0];
+            var tileSizeElement = document.GetElementsByTagName("tileSize")[0];
 
-            foreach (XmlElement element in root.ChildNodes)
+            var groundType = ((XmlText) groundTypeElement.FirstChild).Value;
+            var tileSize = int.Parse(((XmlText) tileSizeElement.FirstChild).Value);
+
+            var tilesElement = document.GetElementsByTagName("tile");
+
+            Ground ground = groundType.Equals("fixes") ? new FixedGround(tileSize) : new ExtendedGround();
+
+            foreach (XmlElement tileElement in tilesElement)
             {
-                if (element.Name.Equals("groundType"))
-                {
-                    type = (element.FirstChild as XmlText).ToString();
-                }
-                else
-                {
-                    foreach (XmlElement tile in element.ChildNodes)
-                    {
-                        Point point;
-                        Tile currentTile;
-                        foreach (XmlElement line in tile.ChildNodes)
-                        {
-                            if (line.Name.Equals("point"))
-                            {
-                                point = Point.MakePointFromXml(line);
-                            }
-                            else
-                            {
-                                // currentTile = Tile.MakeTileFromXml(line, tileSize);
-                            }
-                        }
-                    }
-                }
+                var pointElement = tileElement.GetElementsByTagName("point")[0];
+                var tileInfoElement = tileElement.GetElementsByTagName("tileCells")[0];
+
+                var point = Point.MakePointFromXml((XmlElement) pointElement);
+                var tile = Tile.MakeTileFromXml((XmlElement) tileInfoElement, tileSize);
+
+                if (ground._tilemap.ContainsKey(point))
+                    ground._tilemap.Remove(point);
+
+                ground._tilemap[point] = tile;
             }
 
-            return null;
+            return ground;
         }
     }
 

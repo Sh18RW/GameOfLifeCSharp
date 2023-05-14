@@ -79,19 +79,14 @@ namespace LifeGame.Simulation.Ground
             return !(x < 0 || y < 0 || x >= _groundSize || y >= _groundSize);
         }
 
-        private protected override void MakeSaveFile(XmlDocument document)
-        {
-
-            base.MakeSaveFile(document);
-            var infoElement = document.CreateElement("groundType");
-            infoElement.AppendChild(document.CreateTextNode("fixed"));
-
-            document.FirstChild?.AppendChild(infoElement);
-        }
-
         public override int GetTileSize()
         {
             return _groundSize;
+        }
+
+        private protected override string GetGroundType()
+        {
+            return "fixed";
         }
     }
 }

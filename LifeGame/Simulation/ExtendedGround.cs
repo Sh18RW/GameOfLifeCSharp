@@ -159,18 +159,14 @@ namespace LifeGame.Simulation.Ground
             }
         }
 
-        private protected override void MakeSaveFile(XmlDocument document)
-        {
-            base.MakeSaveFile(document);
-            var infoElement = document.CreateElement("groundType");
-            infoElement.AppendChild(document.CreateTextNode("extended"));
-
-            document.FirstChild?.AppendChild(infoElement);
-        }
-
         public override int GetTileSize()
         {
             return tileSize;
+        }
+
+        private protected override string GetGroundType()
+        {
+            return "extended";
         }
     }
 }

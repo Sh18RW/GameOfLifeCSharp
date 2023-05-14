@@ -1,7 +1,6 @@
 using LifeGame.Simulation.Ground;
 using LifeGame.Simulation.Logic;
 using System.Text;
-using System.Xml.Serialization;
 
 namespace LifeGame.Graphics.Scenes
 {

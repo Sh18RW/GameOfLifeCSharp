@@ -1,3 +1,4 @@
+using System.Text;
 using System.Xml;
 
 namespace LifeGame.Simulation.Logic
@@ -60,42 +61,47 @@ namespace LifeGame.Simulation.Logic
             return _countOfAliveCells;
         }
 
-        public XmlNode MakeXmlNode(XmlDocument root)
+        public XmlNode MakeXmlNode(XmlDocument document)
         {
-            var tileValuesRoot = root.CreateElement("value");
+            var root = document.CreateElement("tileCells");
 
             foreach (var line in _tile)
             {
-                var xmlLine = root.CreateElement("line");
+                var xmlLine = document.CreateElement("line");
 
-                foreach (var i in line)
+                StringBuilder lineString = new StringBuilder();
+
+                foreach (var cell in line)
                 {
-                    var elementXml = root.CreateElement("cell");
-
-                    elementXml.AppendChild(root.CreateTextNode(i.ToString()));
-
-                    xmlLine.AppendChild(elementXml);
+                    lineString.Append((int) cell);
                 }
 
-                tileValuesRoot.AppendChild(xmlLine);
+                var lineText = document.CreateTextNode(lineString.ToString());
+
+                xmlLine.AppendChild(lineText);
+
+                root.AppendChild(xmlLine);
             }
 
-            return tileValuesRoot;
+            return root;
         }
 
-        
+
         public static Tile MakeTileFromXml(XmlElement element, int tileSize)
         {
+            var lines = element.GetElementsByTagName("line");
+
             var tile = new Tile(tileSize);
 
-            for (var y = 0;y < tileSize;y++)
+            for (int y = 0;y < tileSize;y++)
             {
-                var line = element.ChildNodes[y];
-                for (var x = 0;x < tileSize;x++)
+                var line = ((XmlText) lines[y].FirstChild).Value;
+
+                for (int x = 0;x < tileSize;x++)
                 {
-                    var cellNode = (line as XmlElement).ChildNodes[x];
-                    ECell cell = (ECell) int.Parse(((XmlText) cellNode).ToString());
-                    tile.SetCell(x, y, cell);
+                    var cell = line[x];
+
+                    tile.SetCell(x, y, (ECell) int.Parse(cell.ToString()));
                 }
             }
 

@@ -2,7 +2,6 @@ using System.Xml;
 
 namespace LifeGame.Simulation.Logic
 {
-    [Serializable]
     public class Point
     {
         public int X { get; private set; }
@@ -36,12 +35,13 @@ namespace LifeGame.Simulation.Logic
 
         public static Point MakePointFromXml(XmlElement element)
         {
-            // I HATE SECURITY!
-            _ = int.TryParse(element.GetAttribute("x"), out int xPos);
-            _ = int.TryParse(element.GetAttribute("y"), out int yPos);
-            // I REALLY HATE IT. I ONLY WANT TO SEE THIS PROGRAM WORKING!!!!!!!!!!!
+            var xPosElement = element.GetElementsByTagName("x")[0];
+            var yPosElement = element.GetElementsByTagName("y")[0];
 
-            return new Point(xPos, yPos);
+            var xPosText = (XmlText) xPosElement.FirstChild;
+            var yPosText = (XmlText) yPosElement.FirstChild;
+
+            return new Point(int.Parse(xPosText.Value), y: int.Parse(yPosText.Value));
         }
 
         public static implicit operator Point(int x)
