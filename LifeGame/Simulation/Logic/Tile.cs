@@ -83,6 +83,7 @@ namespace LifeGame.Simulation.Logic
             return tileValuesRoot;
         }
 
+        
         public static Tile MakeTileFromXml(XmlElement element, int tileSize)
         {
             var tile = new Tile(tileSize);

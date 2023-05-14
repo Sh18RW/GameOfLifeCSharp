@@ -16,7 +16,7 @@ namespace LifeGame.Graphics.Scenes
         private bool _isPlaying;
         private int _delay;
 
-        private Thread? _updatingThread;
+        private Thread? _currentUpdatingThread;
 
         public SceneSimulation(IContext context, Ground ground) : base(context)
         {
@@ -155,14 +155,17 @@ namespace LifeGame.Graphics.Scenes
                                     Console.WriteLine($"Now delay is {_delay}ms");
                                     break;
                                 case "play":
+                                    _currentUpdatingThread?.Join();
                                     _isPlaying = true;
-                                    new Thread(() => {
+                                    _currentUpdatingThread = new Thread(() => {
                                         while (_isPlaying)
                                         {
                                             _ground.Update();
                                             Thread.Sleep(_delay);
                                         }
-                                    }).Start();
+                                    });
+                                    _currentUpdatingThread.Start();
+
                                     return;
                                 case "save":
                                     while (true)
@@ -186,6 +189,9 @@ namespace LifeGame.Graphics.Scenes
                     }
                 case ConsoleKey.S:
                     _ground.Update();
+                    break;
+                case ConsoleKey.P:
+                    _isPlaying = false;
                     break;
                 case ConsoleKey.UpArrow:
                     _yOffset -= 2;
