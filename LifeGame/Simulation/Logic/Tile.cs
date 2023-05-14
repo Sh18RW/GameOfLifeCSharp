@@ -69,7 +69,7 @@ namespace LifeGame.Simulation.Logic
             {
                 var xmlLine = document.CreateElement("line");
 
-                StringBuilder lineString = new StringBuilder();
+                var lineString = new StringBuilder();
 
                 foreach (var cell in line)
                 {

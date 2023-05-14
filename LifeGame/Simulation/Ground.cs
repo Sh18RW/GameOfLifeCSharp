@@ -24,9 +24,18 @@ namespace LifeGame.Simulation.Ground
         // loading from serialization
         public static Ground? LoadGround(string loadFrom)
         {
-            var document = new XmlDocument();
-            document.Load(loadFrom);
-            return GetGroundFromXml(document);
+            try
+            {
+                var document = new XmlDocument();
+                document.Load(loadFrom);
+                return GetGroundFromXml(document);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Some errors while loading: {e.Message}");
+            }
+
+            return null;
         }
 
         public void SaveGround(string saveFrom)
